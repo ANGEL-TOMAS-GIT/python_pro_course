@@ -1,1 +1,1 @@
-# Python_pro_with_AI_Course
+# python_pro_course
