@@ -1,1 +1,11 @@
-env/
+# =====================================================
+# Environment files (Do NOT commit these!)
+# =====================================================
+.env
+
+# Node modules
+node_modules/
+
+# Python cache files
+__pycache__/
+*.pyc
