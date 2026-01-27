@@ -1,0 +1,2 @@
+This file contains arbitrary content.
+It represents a simple text created for a learning task.
