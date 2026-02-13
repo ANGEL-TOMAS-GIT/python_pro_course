@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Movies{% endblock %}
+
+{% block content %}
+<section class="movies-grid">
+    <h2>{{ 'Movie Details' if single_movie else 'My Movie Collection' }}</h2>
+
+    <!-- Check if there are movies to display -->
+    <div class="movie-container">
+        <!-- Loop through all movies and display each one -->
+        {% for movie in movies %}
+        <div class="movie-card">
+            <h3>{{ movie.title }}</h3>
+            <p class="director">🎬 {{ movie.director }}</p>
+            <p class="year">📅 {{ movie.year }}</p>
+            <p class="genre">🏷️ {{ movie.genre }}</p>
+            <p class="rating">⭐ {{ movie.rating }}/10</p>
+
+        </div>
+        {% endfor %}
+    </div>
+
+</section>
+{% endblock %}
