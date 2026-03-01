@@ -201,5 +201,7 @@ print(get_even_number_of_list(random_number_list))
 # The function accepts a parameter (a number) and if it is even, it outputs the word “even”, if not, then “not even”.
 
 
-parameter: int = lambda number: f"the number {number} is EVEN" if number % 2 == 0 else f"The number {number} is ODD"
+parameter: int = lambda number: (
+    f"the number {number} is EVEN" if number % 2 == 0 else f"The number {number} is ODD"
+)
 print(parameter(5))
