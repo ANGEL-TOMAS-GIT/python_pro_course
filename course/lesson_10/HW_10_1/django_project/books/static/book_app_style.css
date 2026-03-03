@@ -279,6 +279,25 @@ h2.book_collection {
     margin-bottom: 0.5rem;
 }
 
+.back-button {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    padding: 0.6rem 1.2rem;
+    background-color: #8b4513;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 30px;
+    font-family: 'Georgia', serif;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #a0522d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
 
 .book-detail-section {
     max-width: 800px;
