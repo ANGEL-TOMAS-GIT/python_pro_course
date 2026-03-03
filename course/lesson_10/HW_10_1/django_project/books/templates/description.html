@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <section class="book-detail-section">
+        <h2 class="section-title">Book Description</h2>
+
+        <div class="book-header">
+            <h3 class="book-title">📖 {{ book.title }}</h3>
+        </div>
+
+        <div class="book-description-card">
+            <p class="book-description">{{ book.description }}</p>
+        </div>
+    </section>
+{% endblock %}
