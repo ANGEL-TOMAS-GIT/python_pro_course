@@ -2,15 +2,12 @@ from django.contrib import admin
 from .models import Book, Category
 
 
-# Register your models here.
-
-
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "published_at", "price", "stock", "is_available")
+    list_display = ("title", "book_author", "author", "published_at", "price", "stock", "is_available", "description")
     list_filter = ("author", "published_at")
-    search_fields = ("title", "description", "author__username")
-    ordering = ("-price",)
+    search_fields = ("title",)
+    ordering = ("author",)
 
 
 class BookInline(admin.TabularInline):

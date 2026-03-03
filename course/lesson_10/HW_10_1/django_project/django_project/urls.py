@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     path('', lambda request: redirect('/home/')),
-    path('home/', include('books.urls'))
+    path('home/', include('books.urls')),
+
 ]

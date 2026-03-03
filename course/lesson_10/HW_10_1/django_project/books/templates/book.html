@@ -3,33 +3,66 @@
 {% block title %}Books{% endblock %}
 
 {% block content %}
-<section class="books-grid">
-    <h2>
+
+    <h2 class="book_collection">
         {% if single_book %}
-        Book Details
+            Book Details
         {% else %}
-        My Books Collection
+            My Books Collection
         {% endif %}
     </h2>
 
-    <!-- Check if there are books to display -->
-    <div class="book-container">
-        <!-- Loop through all books and display each one -->
-        {% for book in books %}
-        <div class="book-card">
+    <form method="get" class="search-form">
+        <input type="text" name="q" placeholder="🔍 Search books..." value="{{ query }}">
+        <button type="submit">Search</button>
+    </form>
 
-            <h3>📖 {{ book.title }}</h3>
-            <p class="author">👤 {{ book.author }}</p>
-            <p class="published">📅 Published at: {{ book.published_at }}</p>
-            <p class="description">📝 {{ book.description }}</p>
-            <p class="price">💲 {{ book.price }}</p>
-            <p class="stock">📦 {{ book.stock }} available</p>
-            <p class="category">🏷️ {{ book.category }}</p>
+    {% if query %}
+        <h3>Results for "{{ query }}"</h3>
+    {% endif %}
 
+    {% if empty %}
+        <div class="alert-no-books">
+            📚 Your library is empty! Add some books to see them here.
         </div>
-        {% endfor %}
-    </div>
-
-</section>
+    {% endif %}
+    <section class="books-grid">
+        <div class="book-container">
+            {% for book in books %}
+                <a href="{% url 'book_detail' book.pk %}" class="book-card-link">
+                    <div class="book-card">
+                        <h3>📖 {{ book.title }}</h3>
+                        <p class="category">👤 {{ book.book_author }}</p>
+                        <p class="published">📅 Published at: {{ book.published_at }}</p>
+                        <p class="price">💲 {{ book.price }}</p>
+                        <p class="stock">📦 {{ book.stock }} available</p>
+                        <p class="category">🏷️ {{ book.category }}</p>
+                    </div>
+                </a>
+            {% empty %}
+                <p>No books found.</p>
+            {% endfor %}
+        </div>
+    </section>
 {% endblock %}
-
+{##}
+{#{% if query %}#}
+{#        <h3>Results for "{{ query }}"</h3>#}
+{#    {% endif %}#}
+{##}
+{#    <div class="book-container">#}
+{#        {% for book in books %}#}
+{#        <a href="{% url 'book_detail' book.pk %}" class="book-card-link">#}
+{#            <div class="book-card">#}
+{#                <h3>📖 {{ book.title }}</h3>#}
+{#                <p>📅 {{ book.published_at }}</p>#}
+{#                <p>💲 {{ book.price }}</p>#}
+{#                <p>📦 {{ book.stock }} available</p>#}
+{#                <p>🏷️ {{ book.category }}</p>#}
+{#            </div>#}
+{#        </a>#}
+{#        {% empty %}#}
+{#        <p>No books found.</p>#}
+{#    {% endfor %}#}
+{#    </div>#}
+{##}

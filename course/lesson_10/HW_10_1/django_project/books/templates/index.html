@@ -3,6 +3,35 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h2>Welcome to My Book App 📖</h2>
-<p>Discover books, check ratings, and see details about your favorite books.</p>
+    <section class="home-hero">
+        <div class="hero-text">
+            <h1>📚 Welcome to My Book App</h1>
+            <p>Discover new books, check ratings, and explore detailed descriptions of your favorites!</p>
+            <a href="{% url 'books' %}" class="btn-explore">Explore Books</a>
+        </div>
+    </section>
+
+    <section class="home-features">
+        <h2>Why You'll Love Our Library</h2>
+        <div class="feature-cards">
+            <div class="feature-card">
+                <h3>📖 Vast Collection</h3>
+                <p>Thousands of books in all genres, from classics to modern hits.</p>
+            </div>
+            <div class="feature-card">
+                <h3>⭐ Ratings & Reviews</h3>
+                <p>Check what readers say about each book and leave your own review.</p>
+            </div>
+
+            <a href="{% url 'books' %}" class="feature-card-link">
+                <div class="feature-card">
+
+                    <h3>🔍 Easy Search</h3>
+                    <p>Find books quickly with our intuitive search and filter options.</p>
+
+                </div>
+            </a>
+
+        </div>
+    </section>
 {% endblock %}
