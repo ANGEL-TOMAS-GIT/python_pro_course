@@ -20,13 +20,14 @@ class Category(models.Model):
 
 
 class Book(models.Model):
-    title = models.CharField(max_length=50, verbose_name="Book Title")
-    book_author = models.CharField(max_length=20, verbose_name="Book author", blank=True)
+    title = models.CharField(max_length=40, verbose_name="Book Title")
+    book_author = models.CharField(max_length=30, verbose_name="Book author", blank=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     published_at = models.DateField(verbose_name='release date')
     price = models.DecimalField(max_digits=8, decimal_places=2, validators=[MinValueValidator(0)])
     stock = models.PositiveIntegerField()
     is_available = models.BooleanField(default=True)
+    photo = models.ImageField(upload_to="images/", blank=True, null=True)
     
     category = models.ForeignKey(
         Category,
@@ -44,3 +45,10 @@ class Book(models.Model):
     @property
     def is_on_market(self) -> bool:
         return all([self.is_available, self.author])
+    
+    DEFAULT_IMAGE = "/static/default_image.svg"
+    
+    def get_photo_url(self):
+        if self.photo:
+            return self.photo.url
+        return self.DEFAULT_IMAGE
