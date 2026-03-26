@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Books{% endblock %}
+
+{% block content %}
+    <h2 class="book_collection">
+        {% if single_book %}
+            Book Details
+        {% else %}
+            My Books Collection
+        {% endif %}
+    </h2>
+    <form method="get" class="search-form">
+        <input type="text" id="search" name="q" placeholder="🔍 Search books..." value="{{ query }}">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if query %}
+        <h3>Results for "{{ query }}"</h3>
+    {% endif %}
+
+    {% if empty %}
+        <div class="alert-no-books">
+            📚 Your library is empty! Add some books to see them here.
+        </div>
+    {% endif %}
+    <section class="books-grid">
+        <div class="book-container">
+            {% for book in books %}
+                <a href="{% url 'book_detail' book.pk %}" class="book-card-link">
+                    <div class="library-book-card">
+                        <div class="library-book-cover">
+                            <img src="{{ book.get_photo_url }}" alt="book cover">
+                        </div>
+                        <div class="text-container">
+                            <h3 class="book-title"> 📖 {{ book.title }}</h3>
+                            <p class="book-author">👤 {{ book.book_author }}</p>
+                            <p class="category">🏷️ {{ book.category }}</p>
+                            <p class="published">📅 Published at: {{ book.published_at }}</p>
+                            <p class="price">💲 {{ book.price }}</p>
+                            <p class="stock">📦 {{ book.stock }} available</p>
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <p>No Books found.</p>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}
