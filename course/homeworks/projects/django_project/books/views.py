@@ -1,6 +1,7 @@
 from .models import Book
 from django.db.models import Q
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import (
     ListView,
     TemplateView,
@@ -46,27 +47,33 @@ class BookDetailView(DetailView):
     template_name = "book_description.html"
 
 
-class BookCreateView(CreateView):
+class BookCreateView(PermissionRequiredMixin, CreateView):
     model = Book
     fields = "__all__"
     template_name = "book_create.html"
+    permission_required = 'books.add_book'
+    raise_exception = True
     
     def get_success_url(self):
         return reverse_lazy('books')
 
 
-class BookUpdateView(UpdateView):
+class BookUpdateView(PermissionRequiredMixin, UpdateView):
     model = Book
     fields = "__all__"
     template_name_suffix = "_update_form"
     template_name = "book_update.html"
+    permission_required = 'books.update_book'
+    raise_exception = True
     
     def get_success_url(self):
         return reverse_lazy('books')
 
 
-class BookDeleteView(DeleteView):
+class BookDeleteView(PermissionRequiredMixin, DeleteView):
     model = Book
     template_name = "book_delete.html"
+    permission_required = 'books.delete_book'
+    raise_exception = True
     
     success_url = reverse_lazy('books')
