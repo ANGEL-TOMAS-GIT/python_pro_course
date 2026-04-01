@@ -1,0 +1,59 @@
+services:
+  app:
+    container_name: django_books_web_psql
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: [ '/app/entrypoint.sh' ]
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      DB_TYPE: postgres
+      RESTORE_DUMP: true
+      DUMP_FILE: ./sqlite_dump.json
+    env_file:
+      - .env.postgres
+    ports:
+      - "8001:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    networks:
+      - course_net
+    volumes:
+      - .:/app
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env.postgres
+    networks:
+      - course_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      retries: 5
+
+volumes:
+  redis_data:
+
+networks:
+    course_net:
+      driver: bridge

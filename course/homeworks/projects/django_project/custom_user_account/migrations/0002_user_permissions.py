@@ -2,30 +2,30 @@
 
 from django.db import migrations
 from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
+# from django.contrib.contenttypes.models import ContentType
 
-content_type_global, _ = ContentType.objects.get_or_create(app_label='custom_user_account', model='global')
+# content_type_global, _ = ContentType.objects.get_or_create(app_label='custom_user_account', model='global')
+#
+# permissions = [
+#     ('Can Operate Books', 'can_operate_books')
+# ]
+#
+#
+# def create_global_permissions(apps, schema_editor):
+#     for p_name, p_codename in permissions:
+#         Permission.objects.create(
+#             codename=p_codename,
+#             name=p_name,
+#             content_type=content_type_global
+#         )
 
-permissions = [
-    ('Can Operate Books', 'can_operate_books')
-]
-
-
-def create_global_permissions(apps, schema_editor):
-    for p_name, p_codename in permissions:
-        Permission.objects.create(
-            codename=p_codename,
-            name=p_name,
-            content_type=content_type_global
-        )
-
-
-def rollback_permissions(apps, schema_editor):
-    rollback_codenames = [p_codename for _, p_codename in permissions]
-    Permission.objects.filter(
-        content_type=content_type_global,
-        codename__in=rollback_codenames
-    ).delete()
+#
+# def rollback_permissions(apps, schema_editor):
+#     rollback_codenames = [p_codename for _, p_codename in permissions]
+#     Permission.objects.filter(
+#         content_type=content_type_global,
+#         codename__in=rollback_codenames
+#     ).delete()
 
 
 class Migration(migrations.Migration):
@@ -35,9 +35,9 @@ class Migration(migrations.Migration):
     ]
     
     operations = [
-        migrations.RunPython(
-            code=create_global_permissions,
-            reverse_code=rollback_permissions,
-        )
+        # migrations.RunPython(
+        #     code=create_global_permissions,
+        #     reverse_code=rollback_permissions,
+        # )
     
     ]
