@@ -1,4 +1,4 @@
-from .models import Book
+from .models import Book, Customer
 from django.db.models import Q
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -8,8 +8,15 @@ from django.views.generic import (
     DetailView,
     CreateView,
     UpdateView,
-    DeleteView
+    DeleteView,
+    View
 )
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from books.orders.models import Order, OrderItem
+from books.cart.cart import Cart
+from django.contrib import messages
+from books.forms import OrderCreateForm
 
 
 class HomePageTemplateView(TemplateView):
@@ -26,7 +33,7 @@ class BaseBooksListView(ListView):
         
         if query:
             qs = qs.filter(
-                Q(title__icontains=query) |
+                Q(name__icontains=query) |
                 Q(book_author__icontains=query) |
                 Q(category__name__icontains=query)
             )
@@ -35,7 +42,7 @@ class BaseBooksListView(ListView):
 
 
 class BooksListView(BaseBooksListView):
-    template_name = "books.html"
+    template_name = "book_list.html"
 
 
 class ManageBookListView(BaseBooksListView):
@@ -77,3 +84,125 @@ class BookDeleteView(PermissionRequiredMixin, DeleteView):
     raise_exception = True
     
     success_url = reverse_lazy('books')
+
+
+class CartDetailView(TemplateView):
+    template_name = "cart/detail.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart = Cart(self.request)
+        
+        context["cart"] = cart
+        context["total_price"] = cart.get_total_price()
+        return context
+
+
+class CartAddView(View):
+    
+    def post(self, request, pk):
+        cart = Cart(request)
+        product = get_object_or_404(Book, pk=pk, is_active=True)
+        quantity = int(request.POST.get("quantity", 1))
+        cart.add(
+            product=product,
+            override_quantity=True,
+            quantity=quantity,
+        
+        )
+        messages.success(request, f"{product.title} added to cart")
+        return redirect("cart_detail")
+
+
+class CartRemoveView(View):
+    
+    def get(self, request, pk):
+        cart = Cart(request)
+        product = get_object_or_404(Book, pk=pk, is_active=True)
+        cart.remove(product)
+        messages.info(request, f'{product.title} removed from the cart')
+        return redirect("cart_detail")
+
+
+class OrderCreateView(View):
+    template_name = "order/create_order.html"
+    
+    def get(self, request):
+        cart = Cart(request)
+        
+        initial = {}
+        
+        if request.user.is_authenticated:
+            user = request.user
+            
+            initial = {
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+            }
+            
+            customer = hasattr(user, "customer")
+            
+            if customer:
+                initial.update({
+                    "phone": getattr(customer, "phone", ""),
+                    "address": getattr(customer, "address", "")
+                })
+        
+        form = OrderCreateForm(initial=initial)
+        
+        context = {
+            "form": form,
+            "cart": cart,
+            "total_price": cart.get_total_price()
+        }
+        
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        cart = Cart(request)
+        
+        if not cart.cart:
+            messages.warning(request, "The Cart is Empty!!")
+            return redirect("cart_detail")
+        
+        form = OrderCreateForm(request.POST)
+        
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.total_price = cart.get_total_price()
+            
+            if request.user.is_authenticated:
+                customer, _ = Customer.objects.get_or_create(user=request.user)
+                order.customer = customer
+            
+            order.save()
+            
+            for item in cart:
+                OrderItem.objects.create(
+                    order=order,
+                    product=item["product"],
+                    price=item["price"],
+                    quantity=item["quantity"]
+                )
+            
+            cart.clear()
+            
+            messages.success(
+                request,
+                f"The Order #{order.id} successfully completed"
+            )
+            
+            return render(
+                request,
+                "order/success_order.html",
+                {"order": order}
+            )
+        
+        context = {
+            "form": form,
+            "cart": cart,
+            "total_price": cart.get_total_price()
+        }
+        
+        return render(request, self.template_name, context)
