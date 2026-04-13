@@ -1,0 +1,104 @@
+/* ===== GLOBAL LAYOUT ===== */
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f6f8;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===== CONTAINER ===== */
+.checkout-container {
+    max-width: 520px;
+    margin: 60px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== TITLE ===== */
+.checkout-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 25px;
+    color: #111;
+}
+
+/* ===== FORM GROUP ===== */
+.form-group {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* ===== LABEL ===== */
+label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* ===== INPUTS + SELECT ===== */
+.input {
+    padding: 11px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.input:focus {
+    border-color: #000;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+}
+
+/* ===== STRIPE BOX ===== */
+.payment-box {
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+/* ===== BUTTON ===== */
+.btn-pay {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn-pay:hover {
+    background: #222;
+}
+
+.btn-pay:disabled {
+    background: #cfcfcf;
+    cursor: not-allowed;
+}
+
+/* ===== MESSAGE ===== */
+.message {
+    margin-top: 15px;
+    font-size: 14px;
+    text-align: center;
+    color: #333;
+}
+
+/* ===== OPTIONAL: SUCCESS / ERROR STATES ===== */
+.message.success {
+    color: #1a7f37;
+}
+
+.message.error {
+    color: #d93025;
+}

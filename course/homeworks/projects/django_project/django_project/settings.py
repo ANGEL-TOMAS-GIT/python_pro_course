@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,10 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'mptt',
     'books.apps.BooksConfig',
     'custom_user_account.apps.CustomUserAccountConfig',
+    'payments.apps.PaymentsConfig',
     'debug_toolbar',
-    'django_extensions'
+    'django_extensions',
+
 ]
 
 MIDDLEWARE = [
@@ -96,7 +103,10 @@ else:
             'USER': os.getenv('POSTGRES_USER'),
             'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
             'HOST': os.getenv('POSTGRES_HOST', 'db'),
-            'PORT': os.getenv('POSTGRES_PORT', '5432')
+            'PORT': os.getenv('POSTGRES_PORT', '5432'),
+            'OPTIONS': {
+                'options': '-c timezone=UTC'
+            }
         }
         
     }
@@ -135,6 +145,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
+
+PAYMENT_STATIC_URL = 'payment_static/'
+PAYMENT_STATIC_ROOT = BASE_DIR / 'payment_static'
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -218,3 +231,8 @@ CACHES = {
         "LOCATION": "redis://redis:6379/0",
     }
 }
+
+CART_SESSION_ID = 'cart'
+
+STRIPE_PUBLIC_KEY = ''
+STRIPE_SECRET_KEY = ''

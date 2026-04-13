@@ -21,12 +21,16 @@ from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
 import debug_toolbar
+from payments.views import checkout_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
     path('', lambda request: redirect('/home/')),
     path('home/', include('books.urls')),
+    path('payments/', include('payments.urls')),
+    path('checkout/', checkout_view, name='checkout'),
+    path('checkout/<int:order_id>/', checkout_view, name='checkout_order')
 
 ]
 

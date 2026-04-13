@@ -1,11 +1,13 @@
 services:
   app:
     container_name: django_books_web_psql
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile
     entrypoint: [ '/app/entrypoint.sh' ]
-    command: python manage.py runserver 0.0.0.0:8000
+    command:
+      sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     environment:
       DB_TYPE: postgres
       RESTORE_DUMP: true
