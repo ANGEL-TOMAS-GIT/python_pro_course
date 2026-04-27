@@ -8,7 +8,7 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
+from django.views import View
 from payments import serializers
 from payments.models import Payment
 from payments.stripe_service import StripePaymentService
@@ -18,16 +18,15 @@ from books.orders.models import Order
 logger = logging.getLogger(__name__)
 
 STRIPE_P_KEY = settings.STRIPE_PUBLIC_KEY
+class CheckoutView(View):
 
-
-def checkout_view(request, order_id=None):
-    order = None
-    if order_id:
+    def get(self, request, order_id):
         order = get_object_or_404(Order, id=order_id)
-    return render(request, 'checkout.html', {
-        'stripe_public_key': STRIPE_P_KEY,
-        'order': order
-    })
+
+        return render(request, 'checkout.html', {
+            'order': order,
+            'stripe_public_key': STRIPE_P_KEY
+        })
 
 
 class PaymentViewSet(viewsets.ModelViewSet):

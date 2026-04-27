@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="en">
+{% load static %}
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="{% payment_static 'checkout.css' %}">
+    <link rel="stylesheet" href="{% static 'checkout.css' %}">
 	<title>Checkout</title>
 	
 	<script src="https://js.stripe.com/v3/"></script>
@@ -48,7 +49,7 @@
 
 <script>
 	const STRIPE_PUBLIC_KEY = '{{ stripe_public_key }}';
-	const API_URL = '/payments/payments'; // ⚠️ revisa si es correcto en tu proyecto
+	const API_URL = '/payments/payments';
 	
 	/* global Stripe */
 	const stripe = Stripe (STRIPE_PUBLIC_KEY);

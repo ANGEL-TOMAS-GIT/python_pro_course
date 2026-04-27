@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from django.utils.translation import gettext_lazy as _
 
 load_dotenv()
 
@@ -31,6 +32,7 @@ ALLOWED_HOSTS = ["*"]
 
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": lambda request: True,
+    "IS_RUNNING_TESTS": True
 }
 
 # Application definition
@@ -56,6 +58,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -69,7 +72,7 @@ ROOT_URLCONF = 'django_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
@@ -140,14 +143,25 @@ USE_I18N = True
 
 USE_TZ = True
 
+USE_L10N = True
+
+LANGUAGES = [
+    ("en", _("English")),  # ltr
+    ("uk", _("Ukrainian")),  # ltr
+    ('ar', _('Arabic'))  # rtl
+]
+
+LANGUAGES_BIDI = ['ar']
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
+]
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
-
-PAYMENT_STATIC_URL = 'payment_static/'
-PAYMENT_STATIC_ROOT = BASE_DIR / 'payment_static'
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"

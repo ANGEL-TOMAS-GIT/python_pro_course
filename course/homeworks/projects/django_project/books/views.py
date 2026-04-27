@@ -5,18 +5,18 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import (
     ListView,
     TemplateView,
-    DetailView,
     CreateView,
     UpdateView,
     DeleteView,
     View
 )
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from books.orders.models import Order, OrderItem
+from books.orders.models import OrderItem
 from books.cart.cart import Cart
 from django.contrib import messages
 from books.forms import OrderCreateForm
+from asgiref.sync import sync_to_async
 
 
 class HomePageTemplateView(TemplateView):
@@ -49,9 +49,16 @@ class ManageBookListView(BaseBooksListView):
     template_name = "manage_books.html"
 
 
-class BookDetailView(DetailView):
-    model = Book
+class BookDetailView(View):
     template_name = "book_description.html"
+
+    async def get(self, request, pk):
+        try:
+            book = await Book.objects.aget(pk=pk)
+        except Book.DoesNotExist:
+            raise Http404("Book not found")
+
+        return render(request, self.template_name, {"book": book})
 
 
 class BookCreateView(PermissionRequiredMixin, CreateView):
@@ -100,17 +107,27 @@ class CartDetailView(TemplateView):
 
 class CartAddView(View):
     
-    def post(self, request, pk):
-        cart = Cart(request)
-        product = get_object_or_404(Book, pk=pk, is_active=True)
-        quantity = int(request.POST.get("quantity", 1))
-        cart.add(
-            product=product,
-            override_quantity=True,
-            quantity=quantity,
-        
+    async def post(self, request, pk):
+        product = await Book.objects.aget(
+            pk=pk,
+            is_active=True
         )
-        messages.success(request, f"{product.title} added to cart")
+        
+        cart = await sync_to_async(Cart)(request)
+        
+        quantity = int(request.POST.get("quantity", 1))
+        
+        await sync_to_async(cart.add)(
+            product=product,
+            quantity=quantity,
+            override_quantity=True
+        )
+        
+        await sync_to_async(messages.success)(
+            request,
+            f"{product.title} added to cart"
+        )
+        
         return redirect("cart_detail")
 
 
@@ -193,11 +210,7 @@ class OrderCreateView(View):
                 f"The Order #{order.id} successfully completed"
             )
             
-            return render(
-                request,
-                "order/success_order.html",
-                {"order": order}
-            )
+            return redirect('payments:checkout_order', order_id=order.id)
         
         context = {
             "form": form,
