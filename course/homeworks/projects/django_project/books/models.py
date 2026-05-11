@@ -30,7 +30,7 @@ class Category(MPTTModel):
 
 class ActiveProductManager(models.Manager):
     def get_queryset(self) -> models.QuerySet:
-        return super().get_queryset().filter(is_available=True, stock__gt=0)
+        return super().get_queryset().filter(is_active=True, stock__gt=0)
 
 
 class Book(models.Model):
