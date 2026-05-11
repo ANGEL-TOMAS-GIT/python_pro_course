@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 from django.utils.translation import gettext_lazy as _
 
 load_dotenv()
@@ -45,12 +46,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'mptt',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'books.apps.BooksConfig',
     'custom_user_account.apps.CustomUserAccountConfig',
     'payments.apps.PaymentsConfig',
     'debug_toolbar',
     'django_extensions',
+    'mptt',
 
 ]
 
@@ -250,3 +253,31 @@ CART_SESSION_ID = 'cart'
 
 STRIPE_PUBLIC_KEY = ''
 STRIPE_SECRET_KEY = ''
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICACION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'books.api.authentication.BooksJWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication'
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+    
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.SearchFilter',  # ?q=test
+        'rest_framework.filters.OrderingFilter',
+    ],
+    
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 1
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=1),
+    'AUTH_HEADER_TYPES': ('Django',),
+    'USER_ID_FIELDS': ['id', 'email']
+}

@@ -1,4 +1,4 @@
-from .models import Book, Customer
+from .models import Book
 from django.db.models import Q
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -12,10 +12,10 @@ from django.views.generic import (
 )
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from books.orders.models import OrderItem
+
 from books.cart.cart import Cart
 from django.contrib import messages
-from books.forms import OrderCreateForm
+
 from asgiref.sync import sync_to_async
 
 
@@ -51,13 +51,13 @@ class ManageBookListView(BaseBooksListView):
 
 class BookDetailView(View):
     template_name = "book_description.html"
-
+    
     async def get(self, request, pk):
         try:
             book = await Book.objects.aget(pk=pk)
         except Book.DoesNotExist:
             raise Http404("Book not found")
-
+        
         return render(request, self.template_name, {"book": book})
 
 
@@ -139,83 +139,3 @@ class CartRemoveView(View):
         cart.remove(product)
         messages.info(request, f'{product.title} removed from the cart')
         return redirect("cart_detail")
-
-
-class OrderCreateView(View):
-    template_name = "order/create_order.html"
-    
-    def get(self, request):
-        cart = Cart(request)
-        
-        initial = {}
-        
-        if request.user.is_authenticated:
-            user = request.user
-            
-            initial = {
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email": user.email,
-            }
-            
-            customer = hasattr(user, "customer")
-            
-            if customer:
-                initial.update({
-                    "phone": getattr(customer, "phone", ""),
-                    "address": getattr(customer, "address", "")
-                })
-        
-        form = OrderCreateForm(initial=initial)
-        
-        context = {
-            "form": form,
-            "cart": cart,
-            "total_price": cart.get_total_price()
-        }
-        
-        return render(request, self.template_name, context)
-    
-    def post(self, request):
-        cart = Cart(request)
-        
-        if not cart.cart:
-            messages.warning(request, "The Cart is Empty!!")
-            return redirect("cart_detail")
-        
-        form = OrderCreateForm(request.POST)
-        
-        if form.is_valid():
-            order = form.save(commit=False)
-            order.total_price = cart.get_total_price()
-            
-            if request.user.is_authenticated:
-                customer, _ = Customer.objects.get_or_create(user=request.user)
-                order.customer = customer
-            
-            order.save()
-            
-            for item in cart:
-                OrderItem.objects.create(
-                    order=order,
-                    product=item["product"],
-                    price=item["price"],
-                    quantity=item["quantity"]
-                )
-            
-            cart.clear()
-            
-            messages.success(
-                request,
-                f"The Order #{order.id} successfully completed"
-            )
-            
-            return redirect('payments:checkout_order', order_id=order.id)
-        
-        context = {
-            "form": form,
-            "cart": cart,
-            "total_price": cart.get_total_price()
-        }
-        
-        return render(request, self.template_name, context)

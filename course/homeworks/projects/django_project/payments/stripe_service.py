@@ -11,7 +11,7 @@ from payments.models import Payment
 logger = logging.getLogger(__name__)
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-stripe.api_version = '2026-03-25.dahlia'
+stripe.api_version = '2026-04-22.dahlia'
 
 
 class StripePaymentService:

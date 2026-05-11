@@ -20,6 +20,8 @@ from django.shortcuts import redirect
 
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 import debug_toolbar
 
 urlpatterns = [
@@ -28,7 +30,15 @@ urlpatterns = [
     path('', lambda request: redirect('/home/')),
     path('home/', include('books.urls')),
     path('payments/', include('payments.urls')),
-    path('i18n/', include('django.conf.urls.i18n'))
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('api/', include('books.api.urls', namespace='books_api')),
+    path('api_cart/', include("books.cart.api.urls")),
+    path('api_order/', include("books.orders.api.urls")),
+    path('order/', include('books.orders.urls')),
+    path('api-token-obtain/', obtain_auth_token, name='api=token-obtain'),
+    path('api-token/', TokenObtainPairView.as_view(), name='token_obtain'),
+    path('api-token-refresh/', TokenRefreshView.as_view(), name='token_refresh')
+
 ]
 
 if settings.DEBUG:
