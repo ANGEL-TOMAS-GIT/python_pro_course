@@ -12,13 +12,15 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from operator import truediv
 from pathlib import Path
+import os
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 from django.conf.global_settings import CSRF_TRUSTED_ORIGINS, CSRF_COOKIE_SAMESITE, SESSION_COOKIE_SECURE, SECURE_SSL_REDIRECT, \
     SECURE_PROXY_SSL_HEADER, X_FRAME_OPTIONS
 from dotenv import load_dotenv
 from datetime import timedelta
 from django.utils.translation import gettext_lazy as _
-from celery.schedules import crontab
 
 load_dotenv()
 
@@ -339,3 +341,10 @@ STORAGE = {
         'BACKEND': 'django.contrib.staticfiles.storage.StaticFIlesStorage'
     }
 }
+
+sentry_sdk.init(
+    dsn=os.getenv("SENTRY_DSN"),
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,
+    send_default_pii=False
+)
