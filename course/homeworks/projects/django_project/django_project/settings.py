@@ -10,10 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
+from operator import truediv
 from pathlib import Path
+
+from django.conf.global_settings import CSRF_TRUSTED_ORIGINS, CSRF_COOKIE_SAMESITE, SESSION_COOKIE_SECURE, SECURE_SSL_REDIRECT, \
+    SECURE_PROXY_SSL_HEADER, X_FRAME_OPTIONS
 from dotenv import load_dotenv
 from datetime import timedelta
 from django.utils.translation import gettext_lazy as _
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -45,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
@@ -52,8 +58,8 @@ INSTALLED_APPS = [
     'custom_user_account.apps.CustomUserAccountConfig',
     'payments.apps.PaymentsConfig',
     'debug_toolbar',
-    'django_extensions',
     'mptt',
+    'django_celery_beat'
 
 ]
 
@@ -242,12 +248,22 @@ LOGGING = {
     },
 }
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://redis:6379/0",
+CACHES_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'host': [('redis', 6379)]
+        }
     }
 }
+
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 CART_SESSION_ID = 'cart'
 
@@ -280,4 +296,46 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(minutes=1),
     'AUTH_HEADER_TYPES': ('Django',),
     'USER_ID_FIELDS': ['id', 'email']
+}
+
+DEFAULT_EMAIL_FROM = 'angelotomas87.atg2@mail.com'
+
+# SSL
+
+CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ['https://localhost']
+
+CSRF_COOKIE_SAMESITE = None
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = None
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+SECURER_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+
+# AWS S3w
+
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
+# AWS_S3_ENDPOINT_URL = os.getenv('AWS_S3_ENDPOINT_URL')
+AWS_S3_ENDPOINT_URL = ''
+AWS_STORAGE_BUCKER_NAME = os.getenv('AWS_STORAGE_BUCKER_NAME')
+
+# STORAGE CONF
+
+STORAGE = {
+    'default': {
+        'BACKEND': 'storage.basckends.s3boto3.S3Boto3Storege',
+        'OPTIONS': {
+            'access_key': AWS_ACCESS_KEY_ID,
+            'secret_key': AWS_SECRET_KEY,
+            'endpoint_url': AWS_S3_ENDPOINT_URL,
+            'bucket_name': AWS_STORAGE_BUCKER_NAME
+        }
+        
+    },
+    'staticfiles': {
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFIlesStorage'
+    }
 }

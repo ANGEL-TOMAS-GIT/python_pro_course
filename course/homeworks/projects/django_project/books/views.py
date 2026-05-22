@@ -18,7 +18,6 @@ from django.contrib import messages
 
 from asgiref.sync import sync_to_async
 
-
 class HomePageTemplateView(TemplateView):
     template_name = "index.html"
 

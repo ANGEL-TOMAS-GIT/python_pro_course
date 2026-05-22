@@ -7,7 +7,7 @@ from books.orders.models import OrderItem
 from books.cart.cart import Cart
 from django.contrib import messages
 from books.forms import OrderCreateForm
-
+from books.tasks import send_confirmation_order_email
 
 class OrderCreateView(View):
     template_name = "order/create_order.html"
@@ -77,7 +77,7 @@ class OrderCreateView(View):
                 request,
                 f"The Order #{order.id} successfully completed"
             )
-            
+            send_confirmation_order_email.delay(order.id)
             return redirect('payments:checkout_order', order_id=order.id)
         
         context = {
