@@ -1,7 +1,16 @@
 # =====================================================
 # Environment files (Do NOT commit these!)
 # =====================================================
+*logs*
 env
+htmlcov
+static
+*_coverage
+data
+certs
+
+
+
 
 # Node modules
 node_modules/
