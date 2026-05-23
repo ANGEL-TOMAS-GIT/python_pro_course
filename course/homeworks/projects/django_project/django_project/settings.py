@@ -13,8 +13,6 @@ import os
 from operator import truediv
 from pathlib import Path
 import os
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
 
 from django.conf.global_settings import CSRF_TRUSTED_ORIGINS, CSRF_COOKIE_SAMESITE, SESSION_COOKIE_SECURE, SECURE_SSL_REDIRECT, \
     SECURE_PROXY_SSL_HEADER, X_FRAME_OPTIONS
@@ -34,7 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-aixmd0%=66%x)_rpxm#yqe24$(b7c+vsu*--*8@(g^ps5lvk$r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -59,7 +57,7 @@ INSTALLED_APPS = [
     'books.apps.BooksConfig',
     'custom_user_account.apps.CustomUserAccountConfig',
     'payments.apps.PaymentsConfig',
-    'debug_toolbar',
+    # 'debug_toolbar',
     'mptt',
     'django_celery_beat'
 
@@ -67,7 +65,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -321,30 +319,30 @@ X_FRAME_OPTIONS = 'DENY'
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 # AWS_S3_ENDPOINT_URL = os.getenv('AWS_S3_ENDPOINT_URL')
-AWS_S3_ENDPOINT_URL = ''
-AWS_STORAGE_BUCKER_NAME = os.getenv('AWS_STORAGE_BUCKER_NAME')
+AWS_S3_ENDPOINT_URL = 'http://localhost:9002'
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 
 # STORAGE CONF
 
-STORAGE = {
+STORAGES = {
     'default': {
-        'BACKEND': 'storage.basckends.s3boto3.S3Boto3Storege',
+        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
         'OPTIONS': {
             'access_key': AWS_ACCESS_KEY_ID,
             'secret_key': AWS_SECRET_KEY,
             'endpoint_url': AWS_S3_ENDPOINT_URL,
-            'bucket_name': AWS_STORAGE_BUCKER_NAME
+            'bucket_name': AWS_STORAGE_BUCKET_NAME
         }
         
     },
     'staticfiles': {
-        'BACKEND': 'django.contrib.staticfiles.storage.StaticFIlesStorage'
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'
     }
 }
-
-sentry_sdk.init(
-    dsn=os.getenv("SENTRY_DSN"),
-    integrations=[DjangoIntegration()],
-    traces_sample_rate=1.0,
-    send_default_pii=False
-)
+#
+# sentry_sdk.init(
+#     dsn=os.getenv("SENTRY_DSN"),
+#     integrations=[DjangoIntegration()],
+#     traces_sample_rate=1.0,
+#     send_default_pii=False
+# )
