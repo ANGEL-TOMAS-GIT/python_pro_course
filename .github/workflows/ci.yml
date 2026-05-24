@@ -27,4 +27,9 @@ jobs:
           pip install flake8
 
       - name: Run flake8
-        run: flake8 course/homeworks/projects/django_project/payments --exclude=migrations --max-line-length=120
+        run: |
+          flake8 course/homeworks/projects/django_project/payments \
+          course/homeworks/projects/django_project/books \
+          course/homeworks/projects/django_project/custom_user_account \
+          --exclude=migrations \
+          --max-line-length=120
