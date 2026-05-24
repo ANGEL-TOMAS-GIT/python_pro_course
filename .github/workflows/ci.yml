@@ -26,4 +26,4 @@ jobs:
           pip install flake8
           
       - name: Run flake8
-        run: flake8 django_project/payments --exclude=migrations --max-line-length=120
+        run: flake8 django_project/payments/ --exclude=migrations --max-line-length=120
