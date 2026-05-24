@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model  # noqa: F401
 from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
 from decimal import Decimal
@@ -17,7 +17,7 @@ class TimeStampModel(models.Model):
 
 
 class Payment(TimeStampModel):
-    
+
     class Status(models.TextChoices):
         PENDING = "pending", "Waiting"
         PROCESSING = "processing", "Processing"
@@ -33,7 +33,7 @@ class Payment(TimeStampModel):
         default=uuid.uuid4,
         editable=False
     )
-    
+
     user = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
@@ -63,11 +63,11 @@ class Payment(TimeStampModel):
         choices=Status.choices,
         default=Status.PENDING
     )
-    
+
     description = models.TextField(
         blank=True,
     )
-    
+
     metadata = models.JSONField(
         default=dict,
         blank=True
@@ -76,25 +76,25 @@ class Payment(TimeStampModel):
         blank=True,
         null=True
     )
-    
+
     refund_amount = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         default=Decimal(0.0)
     )
-    
+
     class Meta:
         db_table = "stripe_payments"
         verbose_name = "Payment"
         verbose_name_plural = "Payments"
         ordering = ['-created_at']
-    
+
     def __str__(self):
         return f'Payment {self.id} - {self.amount} {self.currency} ({self.status})'
-    
+
     def is_successful(self):
         return self.status == self.Status.SUCCEEDED
-    
+
     @property
     def can_be_refunded(self):
         return (

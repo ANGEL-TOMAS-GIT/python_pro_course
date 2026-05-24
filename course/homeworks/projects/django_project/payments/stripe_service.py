@@ -1,7 +1,7 @@
 import stripe
 import logging
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model  # noqa: F401
 from django.db import transaction
 from django.utils import timezone
 from decimal import Decimal
