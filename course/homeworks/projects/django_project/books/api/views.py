@@ -22,20 +22,20 @@ class BookViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['title', 'description']
     ordering_fields = ['price', 'title']
     lookup_field = 'slug'
-    
+
     def get_queryset(self):
         qs = Book.active.all().select_related('category')
-        
+
         min_price = self.request.query_params.get('min_price')
         max_price = self.request.query_params.get('max_price')
         if min_price:
             qs = qs.filter(price__gte=min_price)
-        
+
         if max_price:
             qs = qs.filter(price__lte=max_price)
-        
+
         return qs
-    
+
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return BookDetailSerializer
@@ -44,7 +44,7 @@ class BookViewSet(viewsets.ReadOnlyModelViewSet):
 
 class GEtTokenPAirView(APIView):
     permission_classes = [AllowAny]
-    
+
     def post(self, request):
         user = authenticate(
             email=request.data.get('email'),
@@ -61,6 +61,6 @@ class GEtTokenPAirView(APIView):
 
 class RefreshTokenView(APIView):
     permission_classes = [AllowAny]
-    
+
     def post(self, request):
         pass

@@ -12,5 +12,4 @@ app_name = 'books_api'
 urlpatterns = [
     path('', include(router.urls)),
     path('get-token/', GEtTokenPAirView.as_view(), name='jwt_token'),
-
 ]

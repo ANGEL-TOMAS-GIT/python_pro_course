@@ -11,7 +11,7 @@ class PermissionAdmin(admin.ModelAdmin):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("title", "book_author", "author", "created_at", "price", "stock", "is_active", "description", "photo")
+    list_display = ("title", "book_author", "author", "created_at", "price", "stock", "is_active", "description")
     list_filter = ("author", "created_at")
     search_fields = ("title",)
     ordering = ("author",)
@@ -33,7 +33,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
 @admin.register(OrderItem)
-class BookAdmin(admin.ModelAdmin):
+class OrderAdmin(admin.ModelAdmin):
     list_display = ("order", "product", "price", "quantity")
     list_filter = ("order",)
     search_fields = ("order",)

@@ -6,5 +6,4 @@ router = DefaultRouter()
 
 urlpatterns = [
     path("cart/", CartAPIView.as_view(), name="cart"),
-
 ]

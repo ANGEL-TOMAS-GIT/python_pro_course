@@ -4,14 +4,14 @@ from books.models import Book, Customer
 
 
 class Order(models.Model):
-    
+
     class OrderStatus(models.TextChoices):
         PENDING = "pending", _("Waiting")
         PAID = "paid", _("Paid")
         CREATED = "created", _("Created")
         DELIVERY = "delivery", _("Delivery")
         CANCELED = "canceled", _("Canceled")
-    
+
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT, null=True, blank=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -39,6 +39,6 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Book, on_delete=models.PROTECT)
     price = models.DecimalField(max_digits=12, decimal_places=2)
     quantity = models.PositiveIntegerField()
-    
+
     def get_total(self):
         return self.price * self.quantity
