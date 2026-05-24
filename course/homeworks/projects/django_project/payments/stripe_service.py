@@ -31,7 +31,7 @@ class StripePaymentService:
         stripe_amount = int(amount * 100)
         payment_metadata = metadata or {}
         payment_metadata['user_id'] = str(user.id)
-        
+
         try:
             logger.info(
                 f'Attempt to create payment intent for user {user.id}, amount {amount} {currency}'
@@ -71,7 +71,7 @@ class StripePaymentService:
         except Exception as e:
             logger.error(f'Unexpected error while payment intent {str(e)}')
             raise
-    
+
     @staticmethod
     @transaction.atomic
     def confirm_payment(payment_id: str, stripe_payment_intent_id: str) -> Payment:

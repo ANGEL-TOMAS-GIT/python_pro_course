@@ -11,7 +11,7 @@ User = get_user_model()
 class TimeStampModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         abstract = True
 
@@ -27,7 +27,7 @@ class Payment(TimeStampModel):
         CREATED = "created", "Created"
         REFUNDED = "refunded", "Refunded"
         PARTIALLY_REFUNDED = "partially_refunded", "Partially_refunded"
-    
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,

@@ -11,7 +11,7 @@ class PaymentSerializer(serializers.ModelSerializer):
         decimal_places=2,
         read_only=True,
     )
-    
+
     class Meta:
         model = Payment
         fields = '__all__'
@@ -33,7 +33,7 @@ class CreatePaymentSerializer(serializers.Serializer):
         min_value=Decimal('0.50'),
         help_text='Amount in the base currency'
     )
-    
+
     currency = serializers.ChoiceField(
         choices=['usd', 'uah', 'eur'],
         default='usd',
