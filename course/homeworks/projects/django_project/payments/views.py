@@ -17,8 +17,7 @@ logger = logging.getLogger(__name__)
 
 STRIPE_P_KEY = settings.STRIPE_PUBLIC_KEY
 class CheckoutView(View):
-    
-    
+
     def get(self, request, order_id):
         order = get_object_or_404(Order, id=order_id)
 
