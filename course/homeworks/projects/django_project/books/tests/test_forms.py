@@ -12,10 +12,10 @@ class TestForm(TestCase):
             "phone": "123456",
             "address": "Berlin"
         })
-        
-        assert form.is_valid()
     
+        assert form.is_valid()
+
     def test_order_form_invalid(self):
         form = OrderCreateForm(data={})
-        
+
         assert not form.is_valid()
