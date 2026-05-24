@@ -33,7 +33,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
 @admin.register(OrderItem)
-class OrderAdmin(admin.ModelAdmin):
+class OrderItemAdmin(admin.ModelAdmin):
     list_display = ("order", "product", "price", "quantity")
     list_filter = ("order",)
     search_fields = ("order",)
