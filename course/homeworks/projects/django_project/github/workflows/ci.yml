@@ -1,6 +1,7 @@
 name: Pipelines for Django_project project
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -27,4 +28,3 @@ jobs:
 
       - name: Run flake8
         run: flake8 payments --exclude=migrations --max-line-length=120
-
