@@ -22,7 +22,7 @@ class BooksJWTAuthentication(BaseAuthentication):
 
         if prefix not in JWT_SETTINGS.get('AUTH_HEADER_TYPES', ('Bearer',)):
             return None
-    
+
         try:
             payload = jwt.decode(
                 token,
@@ -33,7 +33,7 @@ class BooksJWTAuthentication(BaseAuthentication):
             raise AuthenticationFailed('token is expired', code='token_expired')
         except jwt.InvalidTokenError:
             raise AuthenticationFailed('Invalid token, try again', code='invalid_token')
-        
+
         if payload.get('token_type') != 'access':
             raise AuthenticationFailed('Invalid token type', code='invalid_token_type')
 

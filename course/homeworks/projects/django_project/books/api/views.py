@@ -16,7 +16,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
 class BookViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    
+
     search_fields = ['title', 'description']
     ordering_fields = ['price', 'title']
     lookup_field = 'slug'
@@ -50,7 +50,7 @@ class GEtTokenPAirView(APIView):
         )
         if not user:
             return Response({'error': 'invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-        
+
         return Response({
             'access': create_access_token(user),
             'refresh': create_refresh_token(user)

@@ -13,4 +13,3 @@ def get_s3_client():
         config=boto3.session.Config(signature_version='s3v4'),
         verify=False
     )
-    
