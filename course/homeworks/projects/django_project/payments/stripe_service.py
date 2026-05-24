@@ -26,7 +26,7 @@ class StripePaymentService:
     ) -> Tuple[Payment, stripe.PaymentIntent]:
         if amount < Decimal('0.50'):
             raise ValueError('Amount minimal must be 0.50')
-        
+
         stripe_amount = int(amount * 100)
         payment_metadata = metadata or {}
         payment_metadata['user_id'] = str(user.id)
