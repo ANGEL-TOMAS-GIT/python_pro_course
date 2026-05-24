@@ -24,16 +24,16 @@ def test_task(user_id: int | None):
 def send_confirmation_order_email(order_id: int):
     try:
         order = Order.objects.prefetch_related('items__product').get(pk=order_id)
-    
+
     except Order.DoesNotExist:
         return f'Order # {order_id} not found'
     items_text = '\n'.join(
         f' * {item.product.title} x {item.quantity} = {item.get_total} EUR'
         for item in order.items.all()
     )
-    
+
     subject = f'Order #{order_id} confirmed!'
-    
+
     body = {
         f'Dear {order.first_name} \n\n'
         f'Thanks for order #{order_id} \n'

@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.conf import settings
-from django.core.cache import cache
+
 
 User = get_user_model()
 JWT_SETTINGS = getattr(settings, 'SIMPLE_JWT', {})
@@ -14,15 +14,15 @@ class BooksJWTAuthentication(BaseAuthentication):
         header = request.Meta.get('HTTP_AUTHORIZATION')
         if not header:
             return None
-        
+
         try:
             prefix, token = header.split()
         except ValueError:
             raise AuthenticationFailed('Header parsing error')
-        
+
         if prefix not in JWT_SETTINGS.get('AUTH_HEADER_TYPES', ('Bearer',)):
             return None
-        
+    
         try:
             payload = jwt.decode(
                 token,
@@ -36,12 +36,12 @@ class BooksJWTAuthentication(BaseAuthentication):
         
         if payload.get('token_type') != 'access':
             raise AuthenticationFailed('Invalid token type', code='invalid_token_type')
-        
+
         try:
             user_payload = {key: payload.get(key) for key in JWT_SETTINGS.get('USER_ID_FIELDS', ['id'])}
             user = User.objects.get(**user_payload)
-        
+
         except User.DoesNotExist:
             raise AuthenticationFailed('User not found', code='invalid_user')
-        
+
         return user, token

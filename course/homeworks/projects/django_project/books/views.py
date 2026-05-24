@@ -25,18 +25,17 @@ class HomePageTemplateView(TemplateView):
 class BaseBooksListView(ListView):
     model = Book
     context_object_name = "books"
-    
+
     def get_queryset(self):
         qs = super().get_queryset()
         query = self.request.GET.get("q")
-        
+
         if query:
             qs = qs.filter(
                 Q(name__icontains=query) |
                 Q(book_author__icontains=query) |
                 Q(category__name__icontains=query)
             )
-        
         return qs
 
 
@@ -56,7 +55,7 @@ class BookDetailView(View):
             book = await Book.objects.aget(pk=pk)
         except Book.DoesNotExist:
             raise Http404("Book not found")
-        
+
         return render(request, self.template_name, {"book": book})
 
 
@@ -66,7 +65,7 @@ class BookCreateView(PermissionRequiredMixin, CreateView):
     template_name = "book_create.html"
     permission_required = 'books.add_book'
     raise_exception = True
-    
+
     def get_success_url(self):
         return reverse_lazy('books')
 
@@ -78,7 +77,7 @@ class BookUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = "book_update.html"
     permission_required = 'books.update_book'
     raise_exception = True
-    
+
     def get_success_url(self):
         return reverse_lazy('books')
 
@@ -88,50 +87,50 @@ class BookDeleteView(PermissionRequiredMixin, DeleteView):
     template_name = "book_delete.html"
     permission_required = 'books.delete_book'
     raise_exception = True
-    
+
     success_url = reverse_lazy('books')
 
 
 class CartDetailView(TemplateView):
     template_name = "cart/detail.html"
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cart = Cart(self.request)
-        
+
         context["cart"] = cart
         context["total_price"] = cart.get_total_price()
         return context
 
 
 class CartAddView(View):
-    
+
     async def post(self, request, pk):
         product = await Book.objects.aget(
             pk=pk,
             is_active=True
         )
-        
+
         cart = await sync_to_async(Cart)(request)
-        
+
         quantity = int(request.POST.get("quantity", 1))
-        
+
         await sync_to_async(cart.add)(
             product=product,
             quantity=quantity,
             override_quantity=True
         )
-        
+
         await sync_to_async(messages.success)(
             request,
             f"{product.title} added to cart"
         )
-        
+
         return redirect("cart_detail")
 
 
 class CartRemoveView(View):
-    
+
     def get(self, request, pk):
         cart = Cart(request)
         product = get_object_or_404(Book, pk=pk, is_active=True)

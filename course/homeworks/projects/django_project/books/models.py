@@ -15,15 +15,15 @@ class Category(MPTTModel):
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
     )
     is_active = models.BooleanField(default=True)
-    
+
     class MPTTMeta:
         order_insertion_by = ["name"]
-    
+
     def save(self, *args, **kwargs) -> None:
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
-    
+
     def __str__(self) -> str:
         return self.name
 
@@ -55,10 +55,10 @@ class Book(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     photo = models.ImageField(upload_to="images/", blank=True, null=True)
-    
+
     objects = models.Manager()
     active = ActiveProductManager()
-    
+
     class Meta:
         ordering = ["-created_at"]
         constraints = [
@@ -67,16 +67,16 @@ class Book(models.Model):
                 name="non_negative_stock"
             )
         ]
-    
+
     def __str__(self) -> str:
         return f'{self.title}({self.created_at}) - {self.author}'
-    
+
     @property
     def current_price(self) -> bool:
         return self.discount_price or self.price
-    
+
     DEFAULT_IMAGE = "/static/default_image.svg"
-    
+
     def get_photo_url(self):
         if self.photo:
             return self.photo.url
@@ -87,6 +87,6 @@ class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=10, blank=True)
     address = models.CharField(max_length=200, blank=True)
-    
+
     def __str__(self) -> str:
         return self.user.email
