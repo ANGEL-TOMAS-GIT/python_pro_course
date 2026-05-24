@@ -12,11 +12,10 @@ from django.views.generic import (
 )
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
-
 from books.cart.cart import Cart
 from django.contrib import messages
-
 from asgiref.sync import sync_to_async
+
 
 class HomePageTemplateView(TemplateView):
     template_name = "index.html"
@@ -49,7 +48,7 @@ class ManageBookListView(BaseBooksListView):
 
 class BookDetailView(View):
     template_name = "book_description.html"
-    
+
     async def get(self, request, pk):
         try:
             book = await Book.objects.aget(pk=pk)
