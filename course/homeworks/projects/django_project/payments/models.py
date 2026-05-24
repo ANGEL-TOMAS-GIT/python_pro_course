@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model  # noqa: F401
 from django.core.validators import MinValueValidator
-from django.utils.translation import gettext_lazy as _
 from decimal import Decimal
 import uuid
 
