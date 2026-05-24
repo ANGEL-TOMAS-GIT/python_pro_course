@@ -10,9 +10,9 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-lastest
-    # steps:
-    #   - name: Checkout code
-    #     uses: actions/checkout@v6
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
 
     #   - name: Setup Python
     #     uses: actions/setup-python@v6
