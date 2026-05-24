@@ -9,6 +9,7 @@ from django.contrib import messages
 from books.forms import OrderCreateForm
 from books.tasks import send_confirmation_order_email
 
+
 class OrderCreateView(View):
     template_name = "order/create_order.html"
 

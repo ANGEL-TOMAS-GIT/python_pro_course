@@ -4,7 +4,7 @@ from django.test import TestCase
 
 
 class TestModel(TestCase):
-    
+  
     @pytest.mark.django_db
     def test_book_str(self):
         cat = Category.objects.create(name="Fantasy", slug="fantasy")
@@ -28,5 +28,4 @@ class TestModel(TestCase):
             price=15,
             stock=3
         )
-
         assert book.get_photo_url()
