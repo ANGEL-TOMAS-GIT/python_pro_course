@@ -10,7 +10,7 @@ User = get_user_model()
 class UserAdmin(BaseUserAdmin):
     list_display = ("phone_number", "email", "full_name", "is_staff", "is_active")
     ordering = ("email",)
-    
+
     fieldsets = (
         ("Basic Info", {"fields": ("email", "password")}),
         (_("Personal Info"),
@@ -39,7 +39,7 @@ class UserAdmin(BaseUserAdmin):
         ),
         (_("Important dates"), {"fields": ("last_login",)}),
     )
-    
+
     add_fieldsets = (
         (
             None,
@@ -49,7 +49,7 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     )
-    
+
     @staticmethod
     def full_name(obj):
         return f'{obj.first_name} {obj.last_name}'.strip()

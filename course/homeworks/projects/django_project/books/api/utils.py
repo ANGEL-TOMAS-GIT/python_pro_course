@@ -18,7 +18,6 @@ def create_access_token(user):
         'exp': datetime.now(timezone.utc) + ACCESS_TOKEN_LIFETIME,
         'iat': datetime.now(timezone.utc),
         'token_type': 'access'
-        
     }
     return jwt.encode(
         populate_user_fields(
@@ -33,7 +32,6 @@ def create_refresh_token(user):
         'exp': datetime.now(timezone.utc) + REFRESH_TOKEN_LIFETIME,
         'iat': datetime.now(timezone.utc),
         'token_type': 'refresh'
-        
     }
     return jwt.encode(
         populate_user_fields(

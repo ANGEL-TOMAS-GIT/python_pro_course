@@ -25,6 +25,7 @@ class Order(models.Model):
         choices=OrderStatus.choices,
         default=OrderStatus.CREATED
     )
+
     total_price = models.DecimalField(max_digits=12, decimal_places=2)
     payment = models.OneToOneField(
         'payments.Payment',

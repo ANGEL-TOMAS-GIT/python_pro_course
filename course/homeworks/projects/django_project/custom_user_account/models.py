@@ -14,11 +14,11 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
         user.save()
         return user
-    
+
     def create_superuser(self, email, phone_number, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        
+
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True')
         if extra_fields.get('is_superuser') is not True:
@@ -40,15 +40,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('es', 'Spanisch'),
         ('en', 'English')
     ], default='en', verbose_name='language')
-    
+
     object = CustomUserManager()
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['phone_number']
-    
+
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = 'Users'
-    
+
     def __str__(self):
         return self.email

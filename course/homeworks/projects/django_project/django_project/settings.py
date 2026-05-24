@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     # 'debug_toolbar',
     'mptt',
     'django_celery_beat'
-
 ]
 
 MIDDLEWARE = [

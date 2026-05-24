@@ -34,7 +34,6 @@ class BookSerializer(serializers.ModelSerializer):
             'is_active',
             'category_name',
             'current_price',
-        
         ]
 
 
